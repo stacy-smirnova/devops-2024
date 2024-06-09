@@ -1,0 +1,16 @@
+name: Say Hello World
+on: [workflow_dispatch]
+
+jobs:
+  say_hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Input number
+        id: get_number
+        run: |
+          read -p "Enter a number: " number
+          echo "::set-output name=number::$number"
+      - name: Say Hello World
+        run: |
+          number="${{ steps.get_number.outputs.number }}"
+          python3 -c "for _ in range(int(number)): print('Hello, world')"
