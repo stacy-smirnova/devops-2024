@@ -27,11 +27,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-    
-
-      - name: Verify release artifact
-        run: ls -la release/
-
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
