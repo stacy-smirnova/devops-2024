@@ -1,4 +1,4 @@
-name: release
+name: release and bin
 
 on:
   push:
@@ -27,6 +27,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Build Binary File
+        run: |
+          python -m pip install pyinstaller
+          pyinstaller --onefile main.py
+          mkdir -p release
+          mv dist/main release/main
+
+      - name: Verify release artifact
+        run: ls -la release/
+
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -37,3 +47,13 @@ jobs:
           release_name: Release ${{ github.run_number }}
           draft: false
           prerelease: false
+
+      - name: Upload release assets (binary)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release/doc.bin
+          asset_name: doc.bin
+          asset_content_type: application/octet-stream
